@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#091810">
+<title>Agro Match | Máquinas e oportunidades no campo</title>
+<style>
+:root{--bg:#091810;--surface:#10271b;--surface2:#173525;--green:#80c94b;--light:#a4df70;--gold:#c6a45d;--text:#f2f5ed;--muted:#a7b6a7;--border:rgba(164,195,155,.2)}
+*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}
+body{min-height:100vh;padding:28px 5%;color:var(--text);background:radial-gradient(ellipse at 50% 0%,#21452c 0%,transparent 48%),var(--bg)}
+.container{width:100%;max-width:1250px;margin:auto}
+.logo{text-align:center;color:var(--light);font-size:36px;font-weight:900;letter-spacing:2px;margin-bottom:8px}
+.slogan{text-align:center;color:var(--muted);font-size:14px;letter-spacing:1px;margin-bottom:35px}
+.card{max-width:500px;margin:0 auto;padding:35px;background:linear-gradient(145deg,var(--surface2),#102319);border:1px solid var(--border);border-radius:22px;box-shadow:0 25px 70px #0005}
+h1{color:var(--light);font-size:clamp(30px,5vw,46px);margin-bottom:12px}
+h2{font-size:26px;margin-bottom:14px}h3{color:var(--light);font-size:19px;margin-bottom:15px}
+.description{color:var(--muted);text-align:center;font-size:14px;margin:15px 0 25px;line-height:1.7}
+input:not([type=checkbox]),textarea{width:100%;padding:15px;margin:8px 0;border:1px solid var(--border);border-radius:12px;background:#0b1c12;color:white;font-size:15px;outline:none}
+input:focus,textarea:focus{border-color:var(--green);box-shadow:0 0 0 3px #80c94b20}
+input::placeholder,textarea::placeholder{color:#849687}input[type=date]{color-scheme:dark}
+textarea{min-height:110px;resize:vertical}
+label{display:block;margin-top:12px;color:var(--muted)}
+button{width:100%;;padding:15px;margin-top:13px;border:1px solid var(--green);border-radius:12px;background:linear-gradient(135deg,var(--green),#4f9c37);color:#102016;font-size:13px;font-weight:900;letter-spacing:.7px;cursor:pointer;transition:.2s}
+button:hover{filter:brightness(1.08);transform:translateY(-1px)}button:disabled{opacity:.6;cursor:wait;transform:none}
+.secondary{background:transparent;border-color:var(--gold);color:var(--gold)}
+.back{background:transparent;border-color:var(--border);color:var(--muted)}
+.choice{display:flex;align-items:center;gap:12px;background:#0c2015;border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:10px}
+.choice input{width:19px;height:19px;accent-color:var(--green)}.choice label{margin:0;font-size:14px}
+.hidden{display:none!important}
+#inicio{padding-top:12px}
+.hero{text-align:center;padding:45px 22px;margin-bottom:25px;background:linear-gradient(145deg,#10271b,#173525);border:1px solid var(--border);border-radius:22px}
+.hero h1{color:var(--text)}.hero h1 span{color:var(--light)}.hero p{color:var(--muted);line-height:1.7;max-width:650px;margin:10px auto 20px}
+.hero-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}.hero-actions button{max-width:260px}
+section{background:linear-gradient(145deg,#173525,#10251a);padding:25px;margin:18px 0;border:1px solid var(--border);border-radius:18px;box-shadow:0 12px 35px #0002}
+section>p{color:var(--muted);line-height:1.7}
+.machine-card,.need-card{background:#0c2015;border:1px solid var(--border);border-radius:14px;padding:18px;margin:13px 0;overflow-wrap:anywhere}
+.machine-card p,.need-card p{margin-top:8px;color:#d5dfd2;font-size:14px;line-height:1.55}
+.machine-card .price{color:var(--light);font-size:17px;font-weight:bold}
+#listaMaquinas{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+#cadastroMaquina,#precisoMaquina{max-width:700px;margin:20px auto;padding:30px;background:linear-gradient(145deg,#173525,#102319);border:1px solid var(--border);border-radius:20px}
+.status{padding:12px;border-radius:10px;background:#0b1c12;color:var(--muted);font-size:13px;line-height:1.5;margin:12px 0}
+footer{text-align:center;color:#819284;font-size:12px;margin-top:45px;padding:22px;border-top:1px solid var(--border);line-height:1.8}
+@media(min-width:850px){#inicio{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start}#inicio .hero,#inicio .toolbar{grid-column:1/-1}#inicio section{margin:0;min-height:220px}}
+@media(max-width:600px){body{padding:18px 14px}.logo{font-size:29px}.slogan{font-size:12px;margin-bottom:25px}.card{padding:25px 18px}.hero{padding:32px 16px}.hero h1{font-size:30px}.hero-actions{flex-direction:column}.hero-actions button{max-width:none}section{padding:19px}#cadastroMaquina,#precisoMaquina{padding:22px 16px}}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="logo">🌱 AGRO MATCH</div>
+  <p class="slogan">Onde máquinas e oportunidades se encontram.</p>
+
+  <div class="card" id="login">
+    <h2>Bem-vindo ao Agro Match!</h2>
+    <p class="description">Encontre máquinas e oportunidades para o agronegócio.</p>
+    <form id="formLogin">
+      <input type="email" id="emailLogin" placeholder="Seu e-mail" autocomplete="email" required>
+      <input type="password" id="senhaLogin" placeholder="Sua senha" autocomplete="current-password" required>
+      <button type="submit">ENTRAR</button>
+    </form>
+    <button class="secondary" type="button" onclick="abrirCadastro()">CRIAR MINHA CONTA</button>
+    <div class="status" id="statusLogin">Conectando ao serviço de autenticação...</div>
+  </div>
+
+  <div class="card hidden" id="cadastro">
+    <h2>Criar minha conta</h2><p class="description">Faça parte do Agro Match!</p>
+    <form id="formCadastro">
+      <input type="text" id="nome" placeholder="Nome completo" autocomplete="name" required>
+      <input type="email" id="email" placeholder="Seu e-mail" autocomplete="email" required>
+      <input type="tel" id="telefone" placeholder="Telefone / WhatsApp" autocomplete="tel" required>
+      <input type="password" id="senha" placeholder="Crie uma senha (mínimo 6 caracteres)" minlength="6" autocomplete="new-password" required>
+      <p class="description">Como você pretende utilizar o Agro Match?</p>
+      <div class="choice"><input type="checkbox" id="proprietario"><label for="proprietario">Sou proprietário e quero oferecer máquinas.</label></div>
+      <div class="choice"><input type="checkbox" id="cliente"><label for="cliente">Preciso de máquinas para alugar.</label></div>
+      <button type="submit">FINALIZAR CADASTRO</button>
+    </form>
+    <button class="back" type="button" onclick="voltarLogin()">VOLTAR AO LOGIN</button>
+  </div>
+
+  <main id="inicio" class="hidden">
+    <div class="hero">
+      <h1>AGRO <span>MATCH</span> 🚜</h1>
+      <h2>Do campo para o futuro</h2>
+      <p>Encontre máquinas, anuncie seus equipamentos e conecte-se a novas oportunidades no agronegócio.</p>
+      <div class="hero-actions">
+        <button type="button" onclick="abrirCadastroMaquina()">ANUNCIAR MINHA MÁQUINA</button>
+        <button type="button" class="secondary" onclick="abrirPrecisoMaquina()">PRECISO DE UMA MÁQUINA</button>
+      </div>
+    </div>
+    <section>
+      <h3>🚜 Máquinas disponíveis para aluguel</h3>
+      <div id="listaMaquinas"><p>Carregando máquinas...</p></div>
+      <button type="button" class="secondary" onclick="carregarMaquinas()">ATUALIZAR MÁQUINAS</button>
+    </section>
+    <section>
+      <h3>🔎 Clientes procurando máquinas</h3>
+      <div id="listaNecessidades"><p>Carregando solicitações...</p></div>
+      <button type="button" class="secondary" onclick="carregarNecessidades()">ATUALIZAR SOLICITAÇÕES</button>
+    </section>
+    <section>
+      <h3>👤 Meu perfil</h3>
+      <p id="perfilUsuario">Conta conectada.</p>
+      <button type="button" class="back" onclick="sair()">SAIR DA CONTA</button>
+    </section>
+  </main>
+
+  <div id="cadastroMaquina" class="hidden">
+    <h2>🚜 Anunciar minha máquina</h2>
+    <form id="formMaquina">
+      <input type="text" id="tipoMaquina" placeholder="Tipo de máquina (ex.: Trator)" required>
+      <input type="text" id="marcaMaquina" placeholder="Marca" required>
+      <input type="text" id="modeloMaquina" placeholder="Modelo" required>
+      <input type="number" id="valorDiaria" placeholder="Valor da diária em R$" min="1" step="0.01" required>
+      <input type="text" id="cidadeMaquina" placeholder="Cidade" required>
+      <input type="text" id="estadoMaquina" placeholder="Estado (ex.: PR)" maxlength="2" required>
+      <label for="fotoMaquina">Foto da máquina (opcional, máximo 5 MB)</label>
+      <input type="file" id="fotoMaquina" accept="image/*">
+      <button type="submit">PUBLICAR MÁQUINA</button>
+    </form>
+    <button class="back" type="button" onclick="voltarInicio()">VOLTAR</button>
+  </div>
+
+  <div id="precisoMaquina" class="hidden">
+    <h2>🔎 Preciso de uma máquina</h2>
+    <form id="formNecessidade">
+      <input type="text" id="tipoNecessidade" placeholder="Qual máquina você precisa?" required>
+      <input type="text" id="cidadeNecessidade" placeholder="Cidade" required>
+      <input type="text" id="estadoNecessidade" placeholder="Estado (ex.: PR)" maxlength="2" required>
+      <label for="dataInicio">Data de início:</label><input type="date" id="dataInicio" required>
+      <label for="dataFim">Data de término:</label><input type="date" id="dataFim" required>
+      <textarea id="detalhesNecessidade" placeholder="Conte mais detalhes sobre o serviço"></textarea>
+      <button type="submit">PUBLICAR NECESSIDADE</button>
+    </form>
+    <button class="back" type="button" onclick="voltarInicio()">VOLTAR</button>
+  </div>
+  <footer>AGRO MATCH © 2026<br>Encontre sua área de colher.<br>Tecnologia conectando o agronegócio.</footer>
+</div>
+
+<!-- Biblioteca oficial Supabase v2. A chave publishable pode ficar no navegador;
+     a segurança dos dados deve ser garantida pelas políticas RLS do projeto. -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+"use strict";
+
+/* CONFIGURAÇÃO DO SUPABASE */
+const SUPABASE_URL = "https://qxltyukmndcrcsrnlulv.supabase.co";
+const SUPABASE_KEY = "sb_publishable_0NdnSoezZmaotDzNj7-j6Q_z5PyqTfe";
+
+let supabaseClient = null;
+let usuarioAtual = null;
+
+const $ = (id) => document.getElementById(id);
+const mostrar = (id) => $(id).classList.remove("hidden");
+const esconder = (id) => $(id).classList.add("hidden");
+
+function definirStatus(mensagem) {
+  const elemento = $("statusLogin");
+  if (elemento) elemento.textContent = mensagem;
+}
+
+function obterSupabase() {
+  if (!supabaseClient) {
+    alert("A conexão ainda não foi inicializada. Atualize a página e tente novamente.");
+    return null;
+  }
+  return supabaseClient;
+}
+
+function abrirCadastro() { esconder("login"); mostrar("cadastro"); }
+function voltarLogin() { esconder("cadastro"); mostrar("login"); }
+
+function esconderTelasInternas() {
+  esconder("inicio");
+  esconder("cadastroMaquina");
+  esconder("precisoMaquina");
+}
+
+function abrirCadastroMaquina() {
+  esconderTelasInternas();
+  mostrar("cadastroMaquina");
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function abrirPrecisoMaquina() {
+  esconderTelasInternas();
+  mostrar("precisoMaquina");
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function voltarInicio() {
+  esconder("cadastroMaquina");
+  esconder("precisoMaquina");
+  mostrar("inicio");
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function mostrarAplicacao(user) {
+  usuarioAtual = user;
+  esconder("login");
+  esconder("cadastro");
+  esconder("cadastroMaquina");
+  esconder("precisoMaquina");
+  mostrar("inicio");
+  $("perfilUsuario").textContent = "Conectado como: " + (user.email || "usuário");
+  carregarMaquinas();
+  carregarNecessidades();
+}
+
+async function entrar(event) {
+  event.preventDefault();
+  const client = obterSupabase();
+  if (!client) return;
+  const botao = $("formLogin").querySelector('button[type="submit"]');
+  botao.disabled = true;
+  try {
+    const {data,error} = await client.auth.signInWithPassword({
+      email:$("emailLogin").value.trim(),
+      password:$("senhaLogin").value
+    });
+    if (error) throw error;
+    if (!data.user) throw new Error("Não foi possível identificar a conta.");
+    mostrarAplicacao(data.user);
+  } catch (error) {
+    alert("Não foi possível entrar: " + error.message);
+  } finally {
+    botao.disabled = false;
+  }
+}
+
+async function cadastrar(event) {
+  event.preventDefault();
+  const client = obterSupabase();
+  if (!client) return;
+
+  const proprietario = $("proprietario").checked;
+  const cliente = $("cliente").checked;
+  if (!proprietario && !cliente) {
+    alert("Selecione pelo menos uma opção de uso.");
+    return;
+  }
+
+  const tipo_perfil = proprietario && cliente ? "ambos" : (proprietario ? "proprietario" : "cliente");
+  const botao = $("formCadastro").querySelector('button[type="submit"]');
+  botao.disabled = true;
+  try {
+    const {data,error} = await client.auth.signUp({
+      email:$("email").value.trim(),
+      password:$("senha").value,
+      options:{data:{
+        nome_completo:$("nome").value.trim(),
+        telefone:$("telefone").value.trim(),
+        tipo_perfil
+      }}
+    });
+    if (error) throw error;
+    if (data.session && data.user) {
+      alert("Cadastro realizado com sucesso!");
+      mostrarAplicacao(data.user);
+    } else {
+      alert("Cadastro realizado! Verifique seu e-mail para confirmar a conta e depois faça login.");
+      voltarLogin();
+    }
+    $("formCadastro").reset();
+  } catch (error) {
+    alert("Erro no cadastro: " + error.message);
+  } finally {
+    botao.disabled = false;
+  }
+}
+
+async function salvarMaquina(event) {
+  event.preventDefault();
+  const client = obterSupabase();
+  if (!client) return;
+
+  const {data:{user},error:userError} = await client.auth.getUser();
+  if (userError || !user) {
+    alert("Sua sessão expirou. Entre novamente.");
+    esconderTelasInternas(); mostrar("login"); return;
+  }
+
+  const foto = $("fotoMaquina").files[0];
+  let fotoUrl = null;
+  try {
+    if (foto) {
+      if (!foto.type.startsWith("image/")) throw new Error("Selecione um arquivo de imagem válido.");
+      if (foto.size > 5 * 1024 * 1024) throw new Error("A foto deve ter no máximo 5 MB.");
+
+      const extensaoOriginal = (foto.name.split(".").pop() || "jpg").toLowerCase();
+      const extensao = /^[a-z0-9]{1,5}$/.test(extensaoOriginal) ? extensaoOriginal : "jpg";
+      const caminho = user.id + "/" + Date.now() + "." + extensao;
+      const {error:uploadError} = await client.storage.from("maquinas").upload(caminho,foto,{
+        cacheControl:"3600",upsert:false,contentType:foto.type
+      });
+      if (uploadError) throw uploadError;
+      const {data:urlData} = client.storage.from("maquinas").getPublicUrl(caminho);
+      fotoUrl = urlData.publicUrl;
+    }
+
+    const maquina = {
+      user_id:user.id,
+      tipo:$("tipoMaquina").value.trim(),
+      marca:$("marcaMaquina").value.trim(),
+      modelo:$("modeloMaquina").value.trim(),
+      valor_diaria:Number($("valorDiaria").value),
+      cidade:$("cidadeMaquina").value.trim(),
+      estado:$("estadoMaquina").value.trim().toUpperCase(),
+      foto_url:fotoUrl
+    };
+    if (!Number.isFinite(maquina.valor_diaria) || maquina.valor_diaria <= 0) {
+      throw new Error("Informe um valor de diária válido.");
+    }
+
+    const botao = $("formMaquina").querySelector('button[type="submit"]');
+    botao.disabled = true;
+    const {error} = await client.from("Maquinas").insert(maquina);
+    botao.disabled = false;
+    if (error) throw error;
+
+    alert("Máquina anunciada com sucesso!");
+    $("formMaquina").reset();
+    voltarInicio();
+    await carregarMaquinas();
+  } catch (error) {
+    alert("Não foi possível publicar a máquina: " + error.message);
+  }
+}
+
+function criarParagrafo(texto, classe) {
+  const p = document.createElement("p");
+  p.textContent = texto;
+  if (classe) p.className = classe;
+  return p;
+}
+
+async function carregarMaquinas() {
+  const lista = $("listaMaquinas");
+  if (!lista) return;
+  lista.textContent = "Carregando máquinas...";
+  const client = obterSupabase();
+  if (!client) { lista.textContent = "Conexão indisponível."; return; }
+
+  try {
+    const {data,error} = await client.from("Maquinas")
+      .select("id, tipo, marca, modelo, valor_diaria, cidade, estado, foto_url")
+      .eq("ativo",true)
+      .order("created_at",{ascending:false});
+    if (error) throw error;
+
+    lista.replaceChildren();
+    if (!data || data.length === 0) {
+      lista.textContent = "Nenhuma máquina anunciada ainda.";
+      return;
+    }
+
+    data.forEach((maquina) => {
+      const card = document.createElement("article");
+      card.className = "machine-card";
+      if (maquina.foto_url) {
+        const img = document.createElement("img");
+        img.src = maquina.foto_url;
+        img.alt = "Foto da máquina " + (maquina.tipo || "");
+        img.loading = "lazy";
+        img.style.cssText = "width:100%;height:190px;object-fit:cover;border-radius:10px;margin-bottom:12px";
+        img.onerror = () => img.remove();
+        card.appendChild(img);
+      }
+      const titulo = document.createElement("h3");
+      titulo.textContent = maquina.tipo || "Máquina";
+      card.append(titulo,
+        criarParagrafo("Marca: " + (maquina.marca || "Não informada")),
+        criarParagrafo("Modelo: " + (maquina.modelo || "Não informado")),
+        criarParagrafo("Diária: " + Number(maquina.valor_diaria || 0).toLocaleString("pt-BR",{style:"currency",currency:"BRL"}),"price"),
+        criarParagrafo("Local: " + [maquina.cidade,maquina.estado].filter(Boolean).join(" - "))
+      );
+      lista.appendChild(card);
+    });
+  } catch (error) {
+    lista.textContent = "Erro ao carregar máquinas: " + error.message;
+    console.error("carregarMaquinas:",error);
+  }
+}
+
+async function salvarNecessidade(event) {
+  event.preventDefault();
+  const client = obterSupabase();
+  if (!client) return;
+
+  const {data:{user},error:userError} = await client.auth.getUser();
+  if (userError || !user) {
+    alert("Sua sessão expirou. Entre novamente.");
+    esconderTelasInternas(); mostrar("login"); return;
+  }
+
+  const dataInicio = $("dataInicio").value;
+  const dataFim = $("dataFim").value;
+  if (dataFim < dataInicio) {
+    alert("A data final não pode ser anterior à data inicial.");
+    return;
+  }
+
+  const necessidade = {
+    user_id:user.id,
+    tipo_maquina:$("tipoNecessidade").value.trim(),
+    cidade:$("cidadeNecessidade").value.trim(),
+    estado:$("estadoNecessidade").value.trim().toUpperCase(),
+    data_inicio:dataInicio,
+    data_fim:dataFim,
+    detalhes:$("detalhesNecessidade").value.trim()
+  };
+
+  const botao = $("formNecessidade").querySelector('button[type="submit"]');
+  botao.disabled = true;
+  try {
+    const {error} = await client.from("Necessidades").insert(necessidade);
+    if (error) throw error;
+    alert("Sua necessidade foi publicada com sucesso!");
+    $("formNecessidade").reset();
+    voltarInicio();
+    await carregarNecessidades();
+  } catch (error) {
+    alert("Erro ao publicar necessidade: " + error.message);
+  } finally {
+    botao.disabled = false;
+  }
+}
+
+async function carregarNecessidades() {
+  const lista = $("listaNecessidades");
+  if (!lista) return;
+  lista.textContent = "Carregando solicitações...";
+  const client = obterSupabase();
+  if (!client) { lista.textContent = "Conexão indisponível."; return; }
+
+  try {
+    const {data,error} = await client.from("Necessidades")
+      .select("tipo_maquina, cidade, estado, data_inicio, data_fim, detalhes")
+      .order("data_inicio",{ascending:true});
+    if (error) throw error;
+
+    lista.replaceChildren();
+    if (!data || data.length === 0) {
+      lista.textContent = "Nenhum cliente procurando máquinas no momento.";
+      return;
+    }
+
+    data.forEach((necessidade) => {
+      const card = document.createElement("article");
+      card.className = "need-card";
+      const titulo = document.createElement("h3");
+      titulo.textContent = necessidade.tipo_maquina || "Máquina solicitada";
+      card.append(titulo,
+        criarParagrafo("Local: " + [necessidade.cidade,necessidade.estado].filter(Boolean).join(" - ")),
+        criarParagrafo("Período: " + (necessidade.data_inicio || "—") + " até " + (necessidade.data_fim || "—")),
+        criarParagrafo("Detalhes: " + (necessidade.detalhes || "Não informado"))
+      );
+      lista.appendChild(card);
+    });
+  } catch (error) {
+    lista.textContent = "Erro ao carregar solicitações: " + error.message;
+    console.error("carregarNecessidades:",error);
+  }
+}
+
+async function sair() {
+  const client = obterSupabase();
+  if (!client) return;
+  const {error} = await client.auth.signOut();
+  if (error) {
+    alert("Não foi possível sair: " + error.message);
+    return;
+  }
+  usuarioAtual = null;
+  esconderTelasInternas();
+  esconder("cadastro");
+  mostrar("login");
+  $("formLogin").reset();
+  definirStatus("Você saiu da sua conta.");
+}
+
+async function iniciar() {
+  try {
+    if (!window.supabase || typeof window.supabase.createClient !== "function") {
+      throw new Error("A biblioteca do Supabase não carregou. Verifique sua conexão com a internet.");
+    }
+    supabaseClient = window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+    const {data,error} = await supabaseClient.auth.getSession();
+    if (error) throw error;
+
+    if (data.session && data.session.user) {
+      mostrarAplicacao(data.session.user);
+    } else {
+      definirStatus("Conexão pronta. Entre ou crie sua conta.");
+    }
+
+    supabaseClient.auth.onAuthStateChange((_event,session) => {
+      if (session && session.user) {
+        usuarioAtual = session.user;
+      } else {
+        usuarioAtual = null;
+      }
+    });
+  } catch (error) {
+    console.error("Falha ao iniciar Agro Match:",error);
+    definirStatus("Não foi possível iniciar o Supabase: " + error.message);
+  }
+}
+
+/* Eventos dos formulários */
+$("formLogin").addEventListener("submit",entrar);
+$("formCadastro").addEventListener("submit",cadastrar);
+$("formMaquina").addEventListener("submit",salvarMaquina);
+$("formNecessidade").addEventListener("submit",salvarNecessidade);
+
+/* Funções chamadas pelos botões HTML */
+window.abrirCadastro = abrirCadastro;
+window.voltarLogin = voltarLogin;
+window.abrirCadastroMaquina = abrirCadastroMaquina;
+window.abrirPrecisoMaquina = abrirPrecisoMaquina;
+window.voltarInicio = voltarInicio;
+window.carregarMaquinas = carregarMaquinas;
+window.carregarNecessidades = carregarNecessidades;
+window.sair = sair;
+
+iniciar();
+</script>
+</body>
+</html>
