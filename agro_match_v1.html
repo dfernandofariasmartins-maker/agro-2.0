@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#123b29">
+  <title>Agro Match | Máquinas e oportunidades no campo</title>
+  <style>
+    :root {
+      --green-950: #0b2117;
+      --green-900: #123b29;
+      --green-800: #185238;
+      --green-700: #246b43;
+      --lime: #9bd34b;
+      --gold: #c5a45b;
+      --ink: #183326;
+      --muted: #66776b;
+      --paper: #f3f6f0;
+      --white: #ffffff;
+      --line: #dce5d9;
+      --danger: #a73535;
+      --shadow: 0 12px 35px rgba(13, 44, 27, .10);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: Arial, Helvetica, sans-serif;
+      min-height: 100vh;
+    }
+    button, input, textarea, select { font: inherit; }
+    button { cursor: pointer; }
+    .hidden { display: none !important; }
+    .shell { width: min(1120px, calc(100% - 32px)); margin: 0 auto; }
+    .brandbar {
+      background: var(--green-950);
+      color: white;
+      border-bottom: 3px solid var(--gold);
+    }
+    .brandbar-inner {
+      min-height: 76px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: white;
+      text-decoration: none;
+      font-weight: 900;
+      font-size: 25px;
+      letter-spacing: .4px;
+    }
+    .brand-mark { font-size: 30px; }
+    .brand span:last-child { color: var(--lime); }
+    .top-actions { display: flex; align-items: center; gap: 10px; }
+    .top-actions button { width: auto; margin: 0; }
+    .hero {
+      background: linear-gradient(125deg, #123b29 0%, #1e6540 100%);
+      color: white;
+      padding: 38px 0 42px;
+    }
+    .hero h1 { margin: 0 0 10px; font-size: clamp(28px, 5vw, 43px); line-height: 1.1; }
+    .hero p { margin: 0; color: #e2efdf; font-size: 17px; line-height: 1.5; max-width: 680px; }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 24px; }
+    .main { padding: 26px 0 55px; }
+    .section-heading { margin: 0 0 15px; color: var(--green-900); font-size: 23px; }
+    .section-subtitle { color: var(--muted); margin: -7px 0 18px; line-height: 1.5; }
+    .panel {
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 22px;
+      margin: 18px 0;
+      box-shadow: var(--shadow);
+    }
+    .grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+    .machine-card, .need-card {
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 15px;
+      overflow: hidden;
+      min-width: 0;
+    }
+    .machine-card img {
+      width: 100%;
+      height: 190px;
+      object-fit: cover;
+      display: block;
+      background: #e7eee4;
+    }
+    .machine-content, .need-content { padding: 16px; }
+    .machine-card h3, .need-card h3 { color: var(--green-900); margin: 0 0 10px; font-size: 19px; }
+    .machine-card p, .need-card p { margin: 7px 0; color: #536459; line-height: 1.4; overflow-wrap: anywhere; }
+    .price { color: var(--green-800) !important; font-size: 20px; font-weight: 800; margin-top: 12px !important; }
+    .empty, .loading, .error { padding: 18px; border-radius: 12px; background: #f4f7f2; color: var(--muted); }
+    .error { color: var(--danger); background: #fff1f1; }
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--gold);
+      border-radius: 11px;
+      padding: 13px 18px;
+      background: var(--green-800);
+      color: white;
+      font-weight: 800;
+      letter-spacing: .2px;
+      text-decoration: none;
+      min-height: 46px;
+    }
+    .button:hover { background: var(--green-700); }
+    .button.secondary { background: white; color: var(--green-900); border-color: var(--green-700); }
+    .button.light { background: var(--lime); color: var(--green-950); border-color: var(--lime); }
+    .button.danger { background: #fff; color: var(--danger); border-color: #e3bcbc; }
+    .button.small { padding: 9px 12px; min-height: 38px; font-size: 13px; }
+    .button.full { width: 100%; }
+    .form-wrap { width: min(560px, calc(100% - 28px)); margin: 30px auto; }
+    .form-card {
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: clamp(20px, 4vw, 32px);
+      box-shadow: var(--shadow);
+    }
+    .form-card h2 { margin: 0 0 8px; color: var(--green-900); font-size: 26px; }
+    .form-intro { margin: 0 0 22px; color: var(--muted); line-height: 1.5; }
+    .field { margin: 13px 0; }
+    .field label { display: block; margin: 0 0 7px; color: var(--green-900); font-weight: 700; font-size: 14px; }
+    .field input, .field textarea, .field select {
+      display: block;
+      width: 100%;
+      padding: 13px 14px;
+      border: 1px solid #cbd8c9;
+      border-radius: 10px;
+      background: #fbfdf9;
+      color: var(--ink);
+      outline: none;
+    }
+    .field input:focus, .field textarea:focus, .field select:focus {
+      border-color: var(--green-700);
+      box-shadow: 0 0 0 3px rgba(36,107,67,.12);
+    }
+    .field textarea { min-height: 105px; resize: vertical; }
+    .check-row {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      padding: 12px;
+      margin: 9px 0;
+      background: #f6f9f4;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+    }
+    .check-row input { margin-top: 3px; accent-color: var(--green-700); }
+    .check-row label { line-height: 1.4; }
+    .form-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
+    .form-actions .button { flex: 1 1 180px; }
+    .auth-page {
+      min-height: calc(100vh - 76px);
+      display: grid;
+      place-items: center;
+      padding: 35px 14px;
+      background: radial-gradient(circle at top right, #dcebd2, transparent 42%), var(--paper);
+    }
+    .auth-card { width: min(470px, 100%); }
+    .auth-logo { text-align: center; color: var(--green-900); font-size: 32px; font-weight: 900; margin-bottom: 8px; }
+    .auth-slogan { text-align: center; color: var(--muted); margin: 0 0 22px; }
+    .toolbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+    .toolbar input { flex: 1 1 230px; max-width: 420px; padding: 12px 14px; border: 1px solid var(--line); border-radius: 10px; }
+    .muted { color: var(--muted); }
+    .profile-line { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 14px; align-items: center; }
+    footer { background: var(--green-950); color: #d4e1d2; text-align: center; padding: 24px 12px; font-size: 13px; line-height: 1.7; }
+    .notice { padding: 12px 14px; border-radius: 10px; background: #f3f7ed; color: #4e624e; font-size: 13px; line-height: 1.5; margin: 12px 0; }
+    @media (max-width: 800px) { .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    @media (max-width: 560px) {
+      .shell { width: min(100% - 22px, 1120px); }
+      .brandbar-inner { min-height: 66px; }
+      .brand { font-size: 21px; }
+      .top-actions .button { padding: 9px 11px; font-size: 12px; }
+      .hero { padding: 30px 0 32px; }
+      .hero p { font-size: 15px; }
+      .grid { grid-template-columns: 1fr; }
+      .panel { padding: 16px; }
+      .machine-card img { height: 210px; }
+      .form-wrap { margin: 18px auto; }
+    }
+  </style>
+</head>
+<body>
+  <header class="brandbar">
+    <div class="shell brandbar-inner">
+      <a class="brand" href="#" onclick="mostrarInicio(); return false;">
+        <span class="brand-mark">🌱</span><span>AGRO <span>MATCH</span></span>
+      </a>
+      <div class="top-actions">
+        <button id="btnSair" class="button secondary small hidden" type="button" onclick="sair()">SAIR</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- LOGIN -->
+  <main id="telaLogin" class="auth-page">
+    <div class="auth-card">
+      <div class="auth-logo">🌱 AGRO MATCH</div>
+      <p class="auth-slogan">Onde máquinas e oportunidades se encontram.</p>
+      <section class="form-card">
+        <h2>Bem-vindo!</h2>
+        <p class="form-intro">Entre para encontrar máquinas ou anunciar seus equipamentos.</p>
+        <form onsubmit="entrar(event)">
+          <div class="field">
+            <label for="emailLogin">E-mail</label>
+            <input id="emailLogin" type="email" autocomplete="email" placeholder="Seu e-mail" required>
+          </div>
+          <div class="field">
+            <label for="senhaLogin">Senha</label>
+            <input id="senhaLogin" type="password" autocomplete="current-password" placeholder="Sua senha" required>
+          </div>
+          <button class="button full" type="submit">ENTRAR</button>
+        </form>
+        <button class="button secondary full" type="button" onclick="mostrarCadastro()">CRIAR MINHA CONTA</button>
+        <p class="notice">Se você acabou de se cadastrar, talvez precise confirmar seu e-mail antes de entrar.</p>
+      </section>
+    </div>
+  </main>
+
+  <!-- CADASTRO -->
+  <main id="telaCadastro" class="auth-page hidden">
+    <div class="auth-card">
+      <div class="auth-logo">🌱 AGRO MATCH</div>
+      <section class="form-card">
+        <h2>Criar minha conta</h2>
+        <p class="form-intro">Cadastre-se para participar do Agro Match.</p>
+        <form onsubmit="cadastrar(event)">
+          <div class="field"><label for="nome">Nome completo</label><input id="nome" type="text" autocomplete="name" required></div>
+          <div class="field"><label for="telefone">Telefone / WhatsApp</label><input id="telefone" type="tel" autocomplete="tel" required></div>
+          <div class="field"><label for="emailCadastro">E-mail</label><input id="emailCadastro" type="email" autocomplete="email" required></div>
+          <div class="field"><label for="senhaCadastro">Senha (mínimo 6 caracteres)</label><input id="senhaCadastro" type="password" minlength="6" autocomplete="new-password" required></div>
+          <p class="muted"><strong>Como você pretende usar o Agro Match?</strong></p>
+          <div class="check-row"><input type="checkbox" id="proprietario"><label for="proprietario">Sou proprietário e quero oferecer máquinas.</label></div>
+          <div class="check-row"><input type="checkbox" id="cliente"><label for="cliente">Preciso de máquinas para alugar.</label></div>
+          <button class="button full" type="submit">FINALIZAR CADASTRO</button>
+        </form>
+        <button class="button secondary full" type="button" onclick="mostrarLogin()">VOLTAR AO LOGIN</button>
+      </section>
+    </div>
+  </main>
+
+  <!-- APLICATIVO -->
+  <div id="app" class="hidden">
+    <section class="hero">
+      <div class="shell">
+        <h1>Do campo para o futuro. 🚜</h1>
+        <p>Encontre máquinas, anuncie seus equipamentos e conecte-se a novas oportunidades no agronegócio.</p>
+        <div class="hero-actions">
+          <button class="button light" type="button" onclick="abrirFormularioMaquina()">ANUNCIAR MINHA MÁQUINA</button>
+          <button class="button secondary" type="button" onclick="abrirFormularioNecessidade()">PRECISO DE UMA MÁQUINA</button>
+        </div>
+      </div>
+    </section>
+
+    <main class="main shell">
+      <section class="panel">
+        <div class="profile-line">
+          <div>
+            <h2 class="section-heading">👤 Meu perfil</h2>
+            <p id="perfilNome" class="muted">Conta conectada</p>
+            <p id="perfilEmail" class="muted"></p>
+          </div>
+          <button class="button secondary small" type="button" onclick="sair()">ENCERRAR SESSÃO</button>
+        </div>
+      </section>
+
+      <section class="panel" id="secaoMaquinas">
+        <h2 class="section-heading">🚜 Máquinas disponíveis para aluguel</h2>
+        <p class="section-subtitle">Veja os equipamentos anunciados pelos proprietários.</p>
+        <div class="toolbar">
+          <input id="buscaMaquinas" type="search" placeholder="Buscar por máquina, marca ou cidade..." oninput="filtrarMaquinas()">
+          <button class="button secondary small" type="button" onclick="carregarMaquinas()">ATUALIZAR MÁQUINAS</button>
+        </div>
+        <div id="listaMaquinas" class="grid"><p class="loading">Carregando máquinas...</p></div>
+      </section>
+
+      <section class="panel" id="secaoNecessidades">
+        <h2 class="section-heading">📋 Clientes procurando máquinas</h2>
+        <p class="section-subtitle">Veja as necessidades publicadas por clientes.</p>
+        <div class="toolbar">
+          <span class="muted">Solicitações mais recentes primeiro.</span>
+          <button class="button secondary small" type="button" onclick="carregarNecessidades()">ATUALIZAR SOLICITAÇÕES</button>
+        </div>
+        <div id="listaNecessidades" class="grid"><p class="loading">Carregando solicitações...</p></div>
+      </section>
+    </main>
+  </div>
+
+  <!-- FORMULÁRIO DE MÁQUINA -->
+  <main id="telaMaquina" class="form-wrap hidden">
+    <section class="form-card">
+      <h2>🚜 Anunciar minha máquina</h2>
+      <p class="form-intro">Informe os dados do equipamento. A foto é opcional.</p>
+      <form onsubmit="salvarMaquina(event)">
+        <div class="field"><label for="tipoMaquina">Tipo de máquina</label><input id="tipoMaquina" placeholder="Ex.: Trator, colheitadeira, plantadeira" required></div>
+        <div class="field"><label for="marcaMaquina">Marca</label><input id="marcaMaquina" placeholder="Ex.: John Deere" required></div>
+        <div class="field"><label for="modeloMaquina">Modelo</label><input id="modeloMaquina" placeholder="Ex.: 5078E" required></div>
+        <div class="field"><label for="valorDiaria">Valor da diária (R$)</label><input id="valorDiaria" type="number" min="1" step="0.01" placeholder="Ex.: 500" required></div>
+        <div class="field"><label for="cidadeMaquina">Cidade</label><input id="cidadeMaquina" placeholder="Cidade" required></div>
+        <div class="field"><label for="estadoMaquina">Estado</label><input id="estadoMaquina" placeholder="Ex.: Paraná" required></div>
+        <div class="field"><label for="fotoMaquina">Foto da máquina (opcional, até 5 MB)</label><input id="fotoMaquina" type="file" accept="image/*"></div>
+        <div class="notice">A foto será enviada para o bucket público <strong>maquinas</strong> do Supabase. A política de Storage deve permitir que cada usuário envie arquivos dentro da pasta com seu próprio ID.</div>
+        <div class="form-actions">
+          <button class="button" type="submit">PUBLICAR MÁQUINA</button>
+          <button class="button secondary" type="button" onclick="mostrarInicio()">VOLTAR</button>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <!-- FORMULÁRIO DE NECESSIDADE -->
+  <main id="telaNecessidade" class="form-wrap hidden">
+    <section class="form-card">
+      <h2>🔎 Preciso de uma máquina</h2>
+      <p class="form-intro">Publique o que você precisa e informe o período do serviço.</p>
+      <form onsubmit="salvarNecessidade(event)">
+        <div class="field"><label for="tipoNecessidade">Qual máquina você precisa?</label><input id="tipoNecessidade" placeholder="Ex.: Colheitadeira" required></div>
+        <div class="field"><label for="cidadeNecessidade">Cidade</label><input id="cidadeNecessidade" required></div>
+        <div class="field"><label for="estadoNecessidade">Estado</label><input id="estadoNecessidade" placeholder="Ex.: Paraná" required></div>
+        <div class="field"><label for="dataInicio">Data de início</label><input id="dataInicio" type="date" required></div>
+        <div class="field"><label for="dataFim">Data de término</label><input id="dataFim" type="date" required></div>
+        <div class="field"><label for="detalhesNecessidade">Detalhes (opcional)</label><textarea id="detalhesNecessidade" placeholder="Conte mais sobre o serviço, área ou condições."></textarea></div>
+        <div class="form-actions">
+          <button class="button" type="submit">PUBLICAR NECESSIDADE</button>
+          <button class="button secondary" type="button" onclick="mostrarInicio()">VOLTAR</button>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <footer>
+    <strong>AGRO MATCH © 2026</strong><br>
+    Encontre sua área de colher. Tecnologia conectando o agronegócio.
+  </footer>
+
+  <!-- A biblioteca é carregada antes do código que usa o Supabase. -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const SUPABASE_URL = "https://qxltyukmndcrcsrnlulv.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_0NdnSoezZmaotDzNj7-j6Q_z5PyqTfe";
+    const STORAGE_BUCKET = "maquinas";
+
+    let supabaseClient = null;
+    let maquinasCarregadas = [];
+
+    function obterSupabase() {
+      if (supabaseClient) return supabaseClient;
+      if (!window.supabase || !window.supabase.createClient) {
+        alert("Não foi possível carregar a biblioteca do Supabase. Atualize a página e tente novamente.");
+        return null;
+      }
+      supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+      window.supabaseClient = supabaseClient;
+      return supabaseClient;
+    }
+
+    function esconderTelas() {
+      ["telaLogin", "telaCadastro", "app", "telaMaquina", "telaNecessidade"].forEach(id => {
+        document.getElementById(id).classList.add("hidden");
+      });
+    }
+
+    function mostrarLogin() {
+      esconderTelas();
+      document.getElementById("telaLogin").classList.remove("hidden");
+      document.getElementById("btnSair").classList.add("hidden");
+    }
+
+    function mostrarCadastro() {
+      esconderTelas();
+      document.getElementById("telaCadastro").classList.remove("hidden");
+    }
+
+    function mostrarInicio() {
+      esconderTelas();
+      document.getElementById("app").classList.remove("hidden");
+      document.getElementById("btnSair").classList.remove("hidden");
+      carregarMaquinas();
+      carregarNecessidades();
+    }
+
+    function abrirFormularioMaquina() {
+      esconderTelas();
+      document.getElementById("telaMaquina").classList.remove("hidden");
+      document.getElementById("btnSair").classList.remove("hidden");
+    }
+
+    function abrirFormularioNecessidade() {
+      esconderTelas();
+      document.getElementById("telaNecessidade").classList.remove("hidden");
+      document.getElementById("btnSair").classList.remove("hidden");
+    }
+
+    function textoElemento(tag, texto, classe) {
+      const el = document.createElement(tag);
+      el.textContent = texto ?? "";
+      if (classe) el.className = classe;
+      return el;
+    }
+
+    function dataBrasileira(valor) {
+      if (!valor) return "Não informado";
+      const partes = String(valor).split("-");
+      if (partes.length !== 3) return valor;
+      return `${partes[2]}/${partes[1]}/${partes[0]}`;
+    }
+
+    async function entrar(event) {
+      event.preventDefault();
+      const sb = obterSupabase();
+      if (!sb) return;
+
+      const email = document.getElementById("emailLogin").value.trim();
+      const password = document.getElementById("senhaLogin").value;
+      const botao = event.submitter;
+      if (botao) { botao.disabled = true; botao.textContent = "ENTRANDO..."; }
+
+      const { data, error } = await sb.auth.signInWithPassword({ email, password });
+      if (botao) { botao.disabled = false; botao.textContent = "ENTRAR"; }
+
+      if (error) {
+        alert("Não foi possível entrar: " + error.message);
+        return;
+      }
+      await abrirAplicacao(data.user);
+    }
+
+    async function cadastrar(event) {
+      event.preventDefault();
+      const sb = obterSupabase();
+      if (!sb) return;
+
+      const nome = document.getElementById("nome").value.trim();
+      const telefone = document.getElementById("telefone").value.trim();
+      const email = document.getElementById("emailCadastro").value.trim();
+      const password = document.getElementById("senhaCadastro").value;
+      const proprietario = document.getElementById("proprietario").checked;
+      const cliente = document.getElementById("cliente").checked;
+
+      if (!proprietario && !cliente) {
+        alert("Selecione pelo menos uma opção de uso do Agro Match.");
+        return;
+      }
+
+      const tipo_perfil = proprietario && cliente ? "ambos" : proprietario ? "proprietario" : "cliente";
+      const { data, error } = await sb.auth.signUp({
+        email,
+        password,
+        options: { data: { nome_completo: nome, telefone, tipo_perfil } }
+      });
+
+      if (error) {
+        alert("Erro no cadastro: " + error.message);
+        return;
+      }
+
+      if (data.session && data.user) {
+        alert("Cadastro realizado com sucesso!");
+        await abrirAplicacao(data.user);
+      } else {
+        alert("Cadastro realizado! Verifique seu e-mail para confirmar a conta e depois faça login.");
+        mostrarLogin();
+      }
+    }
+
+    async function abrirAplicacao(user) {
+      document.getElementById("perfilNome").textContent =
+        user?.user_metadata?.nome_completo || "Conta Agro Match";
+      document.getElementById("perfilEmail").textContent = user?.email || "";
+      mostrarInicio();
+    }
+
+    async function sair() {
+      const sb = obterSupabase();
+      if (!sb) return;
+      const { error } = await sb.auth.signOut();
+      if (error) {
+        alert("Erro ao sair: " + error.message);
+        return;
+      }
+      mostrarLogin();
+    }
+
+    async function salvarMaquina(event) {
+      event.preventDefault();
+      const sb = obterSupabase();
+      if (!sb) return;
+
+      const { data: { user }, error: userError } = await sb.auth.getUser();
+      if (userError || !user) {
+        alert("Sua sessão expirou. Entre novamente para anunciar uma máquina.");
+        mostrarLogin();
+        return;
+      }
+
+      const botao = event.submitter;
+      if (botao) { botao.disabled = true; botao.textContent = "PUBLICANDO..."; }
+
+      let foto_url = null;
+      const arquivo = document.getElementById("fotoMaquina").files[0];
+
+      if (arquivo) {
+        if (!arquivo.type.startsWith("image/")) {
+          alert("Selecione um arquivo de imagem.");
+          if (botao) { botao.disabled = false; botao.textContent = "PUBLICAR MÁQUINA"; }
+          return;
+        }
+        if (arquivo.size > 5 * 1024 * 1024) {
+          alert("A foto deve ter no máximo 5 MB.");
+          if (botao) { botao.disabled = false; botao.textContent = "PUBLICAR MÁQUINA"; }
+          return;
+        }
+
+        const extensao = (arquivo.name.split(".").pop() || "jpg").toLowerCase().replace(/[^a-z0-9]/g, "");
+        const caminho = `${user.id}/${Date.now()}.${extensao || "jpg"}`;
+        const { error: uploadError } = await sb.storage.from(STORAGE_BUCKET).upload(caminho, arquivo, {
+          cacheControl: "3600",
+          upsert: false,
+          contentType: arquivo.type
+        });
+
+        if (uploadError) {
+          alert("A máquina não foi publicada porque a foto não pôde ser enviada: " + uploadError.message);
+          if (botao) { botao.disabled = false; botao.textContent = "PUBLICAR MÁQUINA"; }
+          return;
+        }
+        foto_url = sb.storage.from(STORAGE_BUCKET).getPublicUrl(caminho).data.publicUrl;
+      }
+
+      const maquina = {
+        user_id: user.id,
+        tipo: document.getElementById("tipoMaquina").value.trim(),
+        marca: document.getElementById("marcaMaquina").value.trim(),
+        modelo: document.getElementById("modeloMaquina").value.trim(),
+        valor_diaria: Number(document.getElementById("valorDiaria").value),
+        cidade: document.getElementById("cidadeMaquina").value.trim(),
+        estado: document.getElementById("estadoMaquina").value.trim(),
+        foto_url
+      };
+
+      const { error } = await sb.from("Maquinas").insert(maquina);
+      if (botao) { botao.disabled = false; botao.textContent = "PUBLICAR MÁQUINA"; }
+
+      if (error) {
+        alert("Erro ao publicar máquina: " + error.message);
+        return;
+      }
+
+      document.querySelector("#telaMaquina form").reset();
+      alert("Máquina anunciada com sucesso!");
+      mostrarInicio();
+    }
+
+    async function carregarMaquinas() {
+      const sb = obterSupabase();
+      const lista = document.getElementById("listaMaquinas");
+      if (!sb || !lista) return;
+      lista.innerHTML = '<p class="loading">Carregando máquinas...</p>';
+
+      const { data, error } = await sb
+        .from("Maquinas")
+        .select("id, tipo, marca, modelo, valor_diaria, cidade, estado, foto_url, created_at")
+        .eq("ativo", true)
+        .order("created_at", { ascending: false });
+
+      if (error) {
+        lista.innerHTML = "";
+        lista.appendChild(textoElemento("p", "Erro ao carregar máquinas: " + error.message, "error"));
+        return;
+      }
+
+      maquinasCarregadas = data || [];
+      renderizarMaquinas(maquinasCarregadas);
+    }
+
+    function renderizarMaquinas(listaDados) {
+      const lista = document.getElementById("listaMaquinas");
+      if (!lista) return;
+      lista.innerHTML = "";
+
+      if (!listaDados || listaDados.length === 0) {
+        lista.appendChild(textoElemento("p", "Nenhuma máquina anunciada encontrada.", "empty"));
+        return;
+      }
+
+      listaDados.forEach(maquina => {
+        const card = document.createElement("article");
+        card.className = "machine-card";
+
+        if (maquina.foto_url) {
+          const img = document.createElement("img");
+          img.src = maquina.foto_url;
+          img.alt = "Foto de " + (maquina.tipo || "máquina");
+          img.loading = "lazy";
+          img.onerror = () => { img.style.display = "none"; };
+          card.appendChild(img);
+        }
+
+        const content = document.createElement("div");
+        content.className = "machine-content";
+        content.appendChild(textoElemento("h3", maquina.tipo || "Máquina"));
+        content.appendChild(textoElemento("p", "Marca: " + (maquina.marca || "Não informada")));
+        content.appendChild(textoElemento("p", "Modelo: " + (maquina.modelo || "Não informado")));
+        content.appendChild(textoElemento("p", "Local: " + (maquina.cidade || "") + " - " + (maquina.estado || "")));
+        content.appendChild(textoElemento("p", "R$ " + Number(maquina.valor_diaria || 0).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + " / diária", "price"));
+        card.appendChild(content);
+        lista.appendChild(card);
+      });
+    }
+
+    function filtrarMaquinas() {
+      const termo = document.getElementById("buscaMaquinas").value.trim().toLocaleLowerCase("pt-BR");
+      if (!termo) {
+        renderizarMaquinas(maquinasCarregadas);
+        return;
+      }
+      const filtradas = maquinasCarregadas.filter(m => [
+        m.tipo, m.marca, m.modelo, m.cidade, m.estado
+      ].some(v => String(v || "").toLocaleLowerCase("pt-BR").includes(termo)));
+      renderizarMaquinas(filtradas);
+    }
+
+    async function salvarNecessidade(event) {
+      event.preventDefault();
+      const sb = obterSupabase();
+      if (!sb) return;
+
+      const { data: { user }, error: userError } = await sb.auth.getUser();
+      if (userError || !user) {
+        alert("Sua sessão expirou. Entre novamente para publicar sua necessidade.");
+        mostrarLogin();
+        return;
+      }
+
+      const dataInicio = document.getElementById("dataInicio").value;
+      const dataFim = document.getElementById("dataFim").value;
+      if (dataFim < dataInicio) {
+        alert("A data final não pode ser anterior à data inicial.");
+        return;
+      }
+
+      const botao = event.submitter;
+      if (botao) { botao.disabled = true; botao.textContent = "PUBLICANDO..."; }
+
+      const necessidade = {
+        user_id: user.id,
+        tipo_maquina: document.getElementById("tipoNecessidade").value.trim(),
+        cidade: document.getElementById("cidadeNecessidade").value.trim(),
+        estado: document.getElementById("estadoNecessidade").value.trim(),
+        data_inicio: dataInicio,
+        data_fim: dataFim,
+        detalhes: document.getElementById("detalhesNecessidade").value.trim()
+      };
+
+      const { error } = await sb.from("Necessidades").insert(necessidade);
+      if (botao) { botao.disabled = false; botao.textContent = "PUBLICAR NECESSIDADE"; }
+
+      if (error) {
+        alert("Erro ao publicar necessidade: " + error.message);
+        return;
+      }
+
+      document.querySelector("#telaNecessidade form").reset();
+      alert("Sua necessidade foi publicada com sucesso!");
+      mostrarInicio();
+    }
+
+    async function carregarNecessidades() {
+      const sb = obterSupabase();
+      const lista = document.getElementById("listaNecessidades");
+      if (!sb || !lista) return;
+      lista.innerHTML = '<p class="loading">Carregando solicitações...</p>';
+
+      const { data, error } = await sb
+        .from("Necessidades")
+        .select("id, tipo_maquina, cidade, estado, data_inicio, data_fim, detalhes, created_at")
+        .order("created_at", { ascending: false });
+
+      if (error) {
+        lista.innerHTML = "";
+        lista.appendChild(textoElemento("p", "Erro ao carregar solicitações: " + error.message, "error"));
+        return;
+      }
+
+      lista.innerHTML = "";
+      if (!data || data.length === 0) {
+        lista.appendChild(textoElemento("p", "Nenhum cliente procurando máquina no momento.", "empty"));
+        return;
+      }
+
+      data.forEach(necessidade => {
+        const card = document.createElement("article");
+        card.className = "need-card";
+        const content = document.createElement("div");
+        content.className = "need-content";
+        content.appendChild(textoElemento("h3", necessidade.tipo_maquina || "Máquina solicitada"));
+        content.appendChild(textoElemento("p", "Local: " + (necessidade.cidade || "") + " - " + (necessidade.estado || "")));
+        content.appendChild(textoElemento("p", "Período: " + dataBrasileira(necessidade.data_inicio) + " até " + dataBrasileira(necessidade.data_fim)));
+        content.appendChild(textoElemento("p", "Detalhes: " + (necessidade.detalhes || "Não informado")));
+        card.appendChild(content);
+        lista.appendChild(card);
+      });
+    }
+
+    async function iniciar() {
+      const sb = obterSupabase();
+      if (!sb) {
+        mostrarLogin();
+        return;
+      }
+      const { data, error } = await sb.auth.getSession();
+      if (error) {
+        console.error("Erro ao recuperar sessão:", error);
+        mostrarLogin();
+        return;
+      }
+      if (data.session?.user) {
+        await abrirAplicacao(data.session.user);
+      } else {
+        mostrarLogin();
+      }
+
+      sb.auth.onAuthStateChange((_event, session) => {
+        if (session?.user) {
+          document.getElementById("perfilNome").textContent =
+            session.user.user_metadata?.nome_completo || "Conta Agro Match";
+          document.getElementById("perfilEmail").textContent = session.user.email || "";
+        } else {
+          mostrarLogin();
+        }
+      });
+    }
+
+    // Disponibiliza as funções usadas pelos botões e formulários do HTML.
+    window.entrar = entrar;
+    window.cadastrar = cadastrar;
+    window.sair = sair;
+    window.mostrarLogin = mostrarLogin;
+    window.mostrarCadastro = mostrarCadastro;
+    window.mostrarInicio = mostrarInicio;
+    window.abrirFormularioMaquina = abrirFormularioMaquina;
+    window.abrirFormularioNecessidade = abrirFormularioNecessidade;
+    window.salvarMaquina = salvarMaquina;
+    window.carregarMaquinas = carregarMaquinas;
+    window.filtrarMaquinas = filtrarMaquinas;
+    window.salvarNecessidade = salvarNecessidade;
+    window.carregarNecessidades = carregarNecessidades;
+
+    iniciar();
+  </script>
+</body>
+</html>
